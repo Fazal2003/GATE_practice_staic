@@ -1,0 +1,1 @@
+# GATE_practice_staic
