@@ -1,0 +1,194 @@
+Q: [GA] 'The team ___ more than 300 runs in 20 overs ___ rains. However, some players needed to improve their batting skills.' Choose the correct sequence. (A) score; despite (B) scoring; instead of (C) scored; despite (D) scoring; in spite of
+A: (C) scored; despite
+---
+Q: [GA] If a positive real x satisfies log2(x) + log√2(x) = 48, then x is: (A) 2^16 (B) 4^16 (C) 2^14 (D) 4^14
+A: (A) 2^16
+---
+Q: [GA] Figure sequence question (rotating grid with triangle/circle markers) — which figure comes next: (A)/(B)/(C)/(D) as shown in the PDF
+A: (A) — see page 3 of the source PDF for the diagram
+---
+Q: [GA] 'All the mangoes in the basket are good.' If this statement is FALSE, which is necessarily true? (A) All the mangoes in the basket are not good. (B) No mango in the basket is good. (C) In the basket, some of the mangoes are good and some are not good. (D) There exists at least one mango in the basket that is not good.
+A: (D) There exists at least one mango in the basket that is not good.
+---
+Q: [GA] Four numbers: (S1) average is 25, (S2) each number is at most 40, (S3) each number is at least 20. Which is necessarily correct? (A) (S1)&(S2) imply (S3) (B) (S2)&(S3) imply (S1) (C) (S1)&(S3) imply (S2) (D) (S1) implies (S3)
+A: (C) (S1) and (S3) together imply (S2)
+---
+Q: [GA] 'People are crowding around ___ pit into which ___ elephant has fallen. I have never seen an elephant looking more bewildered ___ miserable. Here it is ... made to look up ___ a vast, curiosity-stricken crowd.' Choose correct sequence. (A) an;a;at;and (B) a;an;and;at (C) and;a;an;at (D) at;a;an;and
+A: (B) a; an; and; at
+---
+Q: [GA] Products P,Q,R,S,T unit prices 100,50,40,60,60. 250 items sold, avg price Rs.60. Qty(S)=2×Qty(T), Qty(R)=3×Qty(T), Qty(Q)=4×Qty(T). What is the quantity of P sold? (A) 40 (B) 50 (C) 60 (D) 70
+A: (B) 50
+---
+Q: [GA] String P (length l) laid straight; string K laid as semicircular arc with P as diameter. Both shortened by x so shortened K forms a full circle with shortened P as diameter. Find x/l. (A) π (B) (π−1)/2π (C) π/[2(π−1)] (D) π/(π−1)
+A: (C) π / [2(π−1)]
+---
+Q: [GA] Meritorius, his brother, son, daughter seated in a 2×2 grid (Row1/2 × Col1/2), one per box. (i) daughter & brother same column (ii) son seated diagonally across from sibling of worst orator (iii) best & worst orator same row. Who is the best orator? (A) Meritorius (B) Meritorius' brother (C) Meritorius' son (D) Meritorius' daughter
+A: (B) Meritorius' brother
+---
+Q: [GA] Which pattern (P, Q, R, or S) generates the given maze-like figure shown in the PDF?
+A: (B) Q — see page 10 of the source PDF for the diagram
+---
+Q: [ME] Domain A bounded by x²=4y, ordinate x=2, and x-axis. Find ∬_A y dx dy. (A) 1/5 (B) 1/3 (C) 5/12 (D) 1/2
+A: (A) 1/5
+---
+Q: [ME] Let φ be a scalar function. Then ∇φ is: (A) always perpendicular to the surface of constant φ (B) always parallel to the surface of constant φ (C) the minimum rate of change of scalar φ (D) always zero
+A: (A) always perpendicular to the surface of constant φ
+---
+Q: [ME] Order m and degree n of: ∂³φ/∂x³ + (∂²φ/∂y²)(∂φ/∂x) + (∂²φ/∂x²)² + ∂φ/∂y = 0. Find (m−n). (A) 2 (B) 3 (C) 1 (D) 0
+A: (A) 2
+---
+Q: [ME] Newton-Raphson method for solving algebraic equations is based on: (A) Taylor series (B) Fourier series (C) Laurent series (D) Power series
+A: (A) Taylor series
+---
+Q: [ME] Exact solution of ∫₀⁴ dx/(1+x) is n. m = Trapezoidal rule value with 4 equal subintervals. Find (m−n). (A) 0.074 (B) −0.074 (C) −0.003 (D) 0.003
+A: (A) 0.074
+---
+Q: [ME] Horizontal disk with radial frictionless slot, block slides in slot. Disk turns anticlockwise at constant ω=3 rad/s. Block slides at constant 0.2 m/s relative to slot. Magnitude of Coriolis acceleration (m/s²)? (A) 1.2 (B) 0.6 (C) 2.4 (D) 0.3
+A: (A) 1.2
+---
+Q: [ME] Gear train with five gears, teeth N1..N5, gear1=driver, gear5=driven (figure shows gears 1-2-3-4-5 meshed in series). The idler gear in this train is: (A) gear 4 (B) gear 2 (C) gear 3 (D) gear 1
+A: (A) gear 4
+---
+Q: [ME] SDOF vibrating system, only viscous damping. Critical damping coefficient = 350 N·s/m, damping coefficient = 35 N·s/m. Logarithmic decrement is: (A) 0.63 (B) 1.26 (C) 0.32 (D) 1.89
+A: (A) 0.63
+---
+Q: [ME] Closely coiled helical compression spring, mean coil diameter D, wire diameter d, axial force F. Maximum shear stress in wire: (A) 8FD/(πd³) + 4F/(πd²) (B) 8FD/(πd³) + 2F/(πd²) (C) 16FD/(πd³) + 4F/(πd²) (D) 32FD/(πd³) + 4F/(πd²)
+A: (A) 8FD/(πd³) + 4F/(πd²)
+---
+Q: [ME] Aeroplane engine rotor, mass moment of inertia 1.0 kg·m². Rotates 500 RPM clockwise (viewed from front). Aeroplane flies at 1200 km/hr, turns with radius 2 km at same elevation. Magnitude of gyroscopic moment (N·m)? (A) 8.73 (B) 17.46 (C) 4.37 (D) 26.19
+A: (A) 8.73
+---
+Q: [ME] Rectangular plate welded to gusset plate with parallel fillet weld joints, weld length l, fillet leg size h, allowable shear strength τ_all. Tensile force P parallel to weld length. Assuming throat as weakest section, critical load is: (A) √2·h·l·τ_all (B) h·l·τ_all (C) h·l·τ_all/√2 (D) h·l·τ_all/2
+A: (A) √2 h l τ_all
+---
+Q: [ME] Worm gearsets are used for transmitting rotary motion between: (A) non-parallel and non-intersecting shafts (B) intersecting shafts (C) parallel shafts (D) non-parallel and intersecting shafts
+A: (A) non-parallel and non-intersecting shafts
+---
+Q: [ME] Ideal gas from state 1, two processes reach states 2 and 3 lying on the same isotherm. P=pressure, h=enthalpy. Which is correct? (A) h2=h3 (B) h2>h3 (C) P2h3=P3h2 (D) P3h3=P2h2
+A: (A) h2 = h3
+---
+Q: [ME] Steady incompressible laminar flow through 90° tube bend on horizontal surface. Pressure taps Pi (inner wall) and Po (outer wall) in horizontal diametric plane. Which is correct? (A) Po>Pi (B) Po<Pi (C) (Po−Pi) directly proportional to bend radius (D) (Pi−Po) inversely proportional to average flow velocity
+A: (A) Po > Pi
+---
+Q: [ME] Ideal gas flows isothermally through a long horizontal uniform cross-section pipe, steady flow, pressure gradient causes finite density change, purely pressure-driven and subsonic. The average flow velocity: (A) increases along the flow (B) decreases along the flow (C) does not change throughout the pipe (D) increases in entrance region then decreases
+A: (A) increases along the flow
+---
+Q: [ME] Bernoulli's equation CANNOT be applied between: (A) any two arbitrary points in the flow field for steady incompressible rotational flow (B) any two arbitrary points in the flow field for steady incompressible irrotational flow (C) any two points along a streamline for steady incompressible flow (D) any two points along a streamline for steady incompressible rotational flow
+A: (A) any two arbitrary points in the flow field for steady incompressible rotational flow
+---
+Q: [ME] Quiescent fluid at T3 between two vertical parallel plates (plate1 at T1, plate2 at T2). A velocity profile is generated by heat transfer (natural convection, shown in figure). Which relation among T1,T2,T3 is correct? (A) T1>T3 and T3>T2 (B) T1>T3 and T3<T2 (C) T1<T3 and T3<T2 (D) T1<T3 and T3>T2
+A: (A) T1 > T3 and T3 > T2
+---
+Q: [ME] Isothermal expansion of ideal gas in a piston-cylinder; net heat supplied = net work. Which statement is correct? (A) The process is possible. (B) Not possible — violates 2nd law. (C) Not possible — violates 1st law. (D) Possible, but violates 2nd law.
+A: (A) The process is possible.
+---
+Q: [ME] Hydraulic crane supports 500 kg mass with piston-cylinder actuator inclined 60° to horizontal. Piston diameter 30 cm, g=10 m/s². Neglect piston mass. Pressure gage reading (kPa, gage)? (A) 61.26 (B) 6.13 (C) 35.35 (D) 70.71
+A: (A) 61.26
+---
+Q: [ME] Metal casting defects — match: P=Dross, Q=Scab, R=Scar with I=Shallow blow on flat surface, II=Lighter impurities on top surface, III=Rough thin metal layer over sand layer. (A) P-II,Q-III,R-I (B) P-II,Q-I,R-III (C) P-III,Q-I,R-II (D) P-III,Q-II,R-I
+A: (A) P−II, Q−III, R−I
+---
+Q: [ME] Which is NOT an error associated with STL (STereoLithography) files in additive manufacturing? (A) Staircase effect (B) Missing facet (C) Non-manifold topology conditions (D) Degenerate facets
+A: (A) Staircase effect
+---
+Q: [ME] Workpiece firmly held in fixture, machined with plain slab milling cutter. Workpiece width 100 mm, cutter reaches 205 mm above the base. Most suitable fixture height H (mm)? (A) 200 (B) 210 (C) 150 (D) 70
+A: (A) 200
+---
+Q: [ME] 2D surface profile from contact stylus profilometer; peak/valley heights from line AA (μm): 5.35,2.81,6.7,1.92,5.28,3.71,4.32,2.82,8.3,4.2,6.3,1.97,4.96,2.01,6.9,2.9,6.2,4.26,5.54,4.3. Ten-point height average (μm)? (A) 4.57 (B) 5.99 (C) 3.09 (D) 2.90
+A: (A) 4.57
+---
+Q: [ME] Steel plate, yield strength 550 MPa, biaxial stress σx=σ, σy=−2σ. Using distortion energy (von Mises) theory, factor of safety 2, find permissible σ (MPa, 1 decimal place).
+A: 102.0 to 105.0 MPa
+---
+Q: [ME] Sphere radius 5 mm, initially 400°C in furnace, dipped in water bath at 20°C, h=500 W/(m²K), ρ=3000 kg/m³, k=10 W/(mK), c=1000 J/(kgK). Neglecting radiation, time for centre to cool from 400°C to 50°C (seconds, 2 decimal places)?
+A: 24.50 to 26.00 seconds
+---
+Q: [ME] w = log_e(z) = log_e(x+iy), i=√−1. Which statement is correct? (A) w is analytic everywhere except at z=0 (B) w is non-analytic everywhere (C) conjugate functions of w are log_e(x²+y²) and log_e(x²−y²) (D) conjugate functions of w are tan⁻¹(x/y) and tan⁻¹(y/x)
+A: (A) w is analytic everywhere except at z = 0
+---
+Q: [ME] ∂y/∂x = 3∂y/∂t + y, with y(x,0)=10e^(−2x). Solution is: (A) y(x,t)=10e^(−2x−t) (B) y(x,t)=10e^(−2x+t) (C) y(x,t)=10e^(−2x−2t) (D) y(x,t)=10e^(−2x+2t)
+A: (A) y(x,t) = 10e^(−2x−t)
+---
+Q: [ME] f(t)=sin(2t)sin(4t). Find the Laplace transform L{f(t)}: (A) 16s/[(s²+4)(s²+36)] (B) 32s/[(s²+4)(s²+36)] (C) 16/[(s²+4)(s²+36)] (D) 32/[(s²+4)(s²+36)]
+A: (A) 16s / [(s²+4)(s²+36)]
+---
+Q: [ME] Student council of 10: 2 engineering, 3 science, 5 arts. 3 students selected at random. Probability that two belong to the same school and the third belongs to a different school? (A) 79/120 (B) 2/120 (C) 89/120 (D) 69/120
+A: (A) 79/120
+---
+Q: [ME] Cantilever beam length L, concentrated load P at L/2 from free end, moment M=PL/2 applied at free end. Which option correctly shows SFD and BMD? (A)/(B)/(C)/(D) — diagrams in source PDF
+A: (A) — see page 32 of the source PDF for the SFD/BMD diagrams
+---
+Q: [ME] Two structural members connected by a hinge, externally loaded: 10 kN at 0.5m from A, hinge at 1.0m from A, 25 kN load, roller supports A & B, pin support C. Spacing: A to 10kN=0.5m, to hinge=0.5m, hinge to 25kN=0.2+0.2m, to C=0.6m. Magnitude of vertical reaction at C (kN)? (A) 5 (B) 10 (C) 20 (D) 15
+A: (A) 5
+---
+Q: [ME] 5 kg mass at free end of overhanging massless beam (pin support, roller support), 1m to roller then 2m overhang to mass. E=200 GPa, I=10⁻⁸ m⁴. Natural frequency (rad/s)? (A) 10 (B) 10/3 (C) 5 (D) 20/3
+A: (A) 10
+---
+Q: [ME] Very long fin, uniform square cross-section, replaced by very long fin of uniform circular cross-section (same material), same h. Diameter of circular fin = side length of square fin. Ratio of heat transfer rates (before:after replacement)? (A) 4/π (B) 16/π² (C) 1/π (D) 1/π²
+A: (A) 4/π
+---
+Q: [ME] Ideal regenerative Rankine cycle (boiler, turbine w/ extraction to feedwater heater, condenser, pump — states 1-5 as in figure). Which T-s diagram (A/B/C/D) correctly represents this cycle?
+A: (A) — see page 36 of the source PDF for the T-s diagrams
+---
+Q: [ME] Euler variables of polyhedra: P1(F6,E12,V8), P2(F5,E8,V5), P3(F5,E12,V8), P4(F10,E24,V16), all Loops=0,Bodies=1,Genus=0. Which is NOT a topologically valid closed polyhedron per Euler's law (F−E+V=2)? (A) P3 (B) P1 (C) P4 (D) P2
+A: (A) P3 — Euler check: F−E+V should equal 2 for a valid closed polyhedron. P3 gives 5−12+8=1, which fails.
+---
+Q: [ME] LP: Minimize Z=0.07x1+0.05x2 s.t. 0.1x1≥0.4, 0.1x2≥0.6, 0.1x1+0.2x2≥2.0, 0.2x1+0.1x2≥1.8, x1,x2≥0. W is the dual objective with dual vars k1,k2,k3,k4. Which is the correct form of W? (A) Max W=0.4k1+0.6k2+2.0k3+1.8k4 s.t. 0.1k1+0.1k3+0.2k4≤0.07, 0.1k2+0.2k3+0.1k4≤0.05, k≥0 (B)/(C)/(D) variants with swapped constraints
+A: (A) Maximize W = 0.4k1+0.6k2+2.0k3+1.8k4, subject to 0.1k1+0.1k3+0.2k4 ≤ 0.07 and 0.1k2+0.2k3+0.1k4 ≤ 0.05, k1,k2,k3,k4≥0
+---
+Q: [ME] Four jobs on order, day 20 of production calendar. Due dates & work remaining: M(due26,rem5), N(due24,rem10), O(due28,rem10), P(due31,rem5). Which job(s) have critical ratio (=(due−today)/work remaining) less than unity?
+A: (A) Job N and Job O
+---
+Q: [ME] Block of 50 kg on inclined plane (30°), connected via inextensible massless string over two massless pulleys to hanging mass M. Coefficient of static friction between block & plane = 0.3. Neglecting pulley friction, minimum M to start upward motion of block (kg, 1 decimal place)?
+A: 18.5 to 19.5 kg
+---
+Q: [ME] Simply supported beam, rectangular cross-section 20mm×45mm, pin support A, roller support B. External point load P at 2m from A (1m+1m), span continues 3m to B. Shear stress at point C (on neutral axis) = 3 MPa. Find magnitude of P (kN, 1 decimal place).
+A: 2.9 to 3.1 kN
+---
+Q: [ME] Rigid slender bar AB sliding against two mutually perpendicular frictionless walls, bar at 45° to floor, midpoint G. Velocity of A downward = 6 m/s. Magnitude of absolute velocity of midpoint G (m/s, 2 decimal places)?
+A: 4.20 to 4.29 m/s
+---
+Q: [ME] Cylindrical pressure vessel, steel, diameter 3 m, wall thickness 15 mm. E=210 GPa, Poisson's ratio=0.3. Allowable normal strain at outer surface = 0.00034. Permissible pressure in tank (kPa, 1 decimal place)?
+A: 838.0 to 842.0 kPa
+---
+Q: [ME] Welded square plate 1m×1m, biaxial stress 6.5 MPa and 25 MPa (weld diagonal). Ratio of normal stress perpendicular to the weld to the shear stress of the weld (2 decimal places)?
+A: -0.61 to -0.57 OR 0.57 to 0.61
+---
+Q: [ME] Water (ρ=1000 kg/m³) exits horizontal pipe (radius 15 cm) at 4.5 m³/min into a coaxial diffuser (length 0.5 m) via flange, raising pressure to atmospheric with no backflow. Diffuser inner radius r=0.15+0.4x². Frictionless flow. Magnitude of force exerted by diffuser on the flange (N, 2 decimal places)?
+A: 15.50 to 17.10 N
+---
+Q: [ME] Two perpendicular rectangular surfaces (1 m² each) sharing a common edge. Hot surface: 1000 K, emissivity 0.4. Other surface insulated, in radiant balance with surroundings at 300 K. Fraction of radiation leaving hot surface reaching cold surface = 0.2. Equivalent overall resistance for radiation heat loss from hot surface (m⁻², 2 decimal places)?
+A: 2.50 to 2.60 m⁻²
+---
+Q: [ME] Heat exchanger: h1=50 W/(m²K), h2=80 W/(m²K). Inner tube k=386 W/(mK), length=1m, inside radius=10mm, thickness=1mm. Fluid1 in 60°C→out 40°C; Fluid2 in 20°C→out 30°C (counter-flow). No heat loss to surroundings. Heat transfer rate (W, 1 decimal place)?
+A: 49.5 to 51.5 W
+---
+Q: [ME] Liquid exits chemical plant reactor at 250°C, flow rate 100 LPM, ambient 25°C, ρ=1000 kg/m³, c=4.18 kJ/(kg·K) constant. Rate of exergy of hot liquid stream at plant exit (kW, 2 decimal places)?
+A: 396.00 to 406.00 kW
+---
+Q: [ME] Rigid closed vertical cylindrical vessel, 15 cm diameter, 5 kg water at 80°C, 10% quality, heated to 130°C. Considering only a horizontal separated liquid-vapor interface, find the dip in liquid level after heating (cm, 2 decimal places). [vf(80°C)=0.001029, vg(80°C)=3.4053, vf(130°C)=0.001070, vg(130°C)=0.66808 m³/kg]
+A: 11.00 to 11.90 cm
+---
+Q: [ME] Inward flow reaction turbine, outer diameter 1 m, 600 RPM. Normal component of absolute velocity at inlet = 10 m/s. Guide blade angle = 15°. Find the inlet vane angle of the runner (degrees, 1 decimal place).
+A: 57.5 to 61.5 degrees
+---
+Q: [ME] Deep drawing of rectangular sheet metal: 30% stretching in length results in 15% reduction in thickness. Assuming volume constancy, find the normal anisotropy of the sheet metal (2 decimal places).
+A: 0.59 to 0.63
+---
+Q: [ME] Actual casting demand: Jan 2026=500 units, Feb 2026=635 units. Forecasted demand for Jan 2026=250 units, smoothing constant α=0.7. Using exponential smoothing, find forecast demand for March 2026 (integer units).
+A: 572 units
+---
+Q: [ME] Item holding cost = ₹0.50/unit/month, ordering cost = ₹550/order, annual demand = 10000 units, demand fixed, shortage cost infinite. Using classical EOQ model, find the optimal lot size (units per order, nearest integer).
+A: 1353 to 1355 units
+---
+Q: [ME] Metal has FCC crystal structure, density=2.71 g/cm³, atomic weight=26.98 g/mol, Avogadro's number=6.023×10²³. Find the atomic radius (nm, 2 decimal places).
+A: 0.12 to 0.16 nm
+---
+Q: [ME] Orthogonal turning, single point tool, feed rate=0.24 mm/rev, uncut chip thickness=0.23 mm, shear angle=20°, tangential force=800 N, radial force=150 N. Find the shear force (N, 2 decimal places).
+A: 571.00 to 574.00 N
+---
+Q: [ME] Drill bit produces 150 through-holes at 200 RPM before failing; at 300 RPM it produces 60 holes before failing (same plate, other params constant). Find the exponent in Taylor's tool life equation (2 decimal places).
+A: 0.29 to 0.33
+---
+Q: [ME] PERT network activities with optimistic/most-likely/pessimistic times (weeks): 1-2(2,4,12), 1-3(2,4,6), 1-4(3,4,11), 2-5(3,6,9), 3-4(2,5,14), 3-5(3,3,3), 4-5(3,6,15), 5-6(2,5,8). Find the expected project length (weeks, integer).
+A: 22 weeks

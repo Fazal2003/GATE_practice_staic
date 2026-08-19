@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Serif:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <h1><span class="dot"></span>Study Cards</h1>
+    <small id="clockNow">—</small>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen active" id="screen-home">
+    <div class="stat-row">
+      <div class="stat"><div class="num" id="statDue">0</div><div class="lbl">Due Now</div></div>
+      <div class="stat"><div class="num" id="statTotal">0</div><div class="lbl">Total Cards</div></div>
+      <div class="stat"><div class="num" id="statStreak">0</div><div class="lbl">Day Streak</div></div>
+    </div>
+    <div class="home-actions">
+      <button class="btn btn-primary" id="btnStart">Start Review</button>
+      <button class="btn" id="btnManage">Manage Cards</button>
+    </div>
+    <p class="hint">Each question gets a 2-minute timer. Rate yourself honestly after every card — <em>Again, Hard, Good, Easy</em> — and the schedule adjusts like Anki's spaced repetition. <a id="linkHowImport">No cards yet? Add or import some →</a></p>
+  </div>
+
+  <!-- MANAGE -->
+  <div class="screen" id="screen-manage">
+    <div class="panel">
+      <h2>Add a Card</h2>
+      <label>Question</label>
+      <textarea id="newQ" rows="2" placeholder="e.g. What is the capital of France?"></textarea>
+      <label>Answer</label>
+      <textarea id="newA" rows="2" placeholder="e.g. Paris"></textarea>
+      <button class="btn btn-rust" id="btnAddCard">Add Card</button>
+    </div>
+
+    <div class="panel">
+      <h2>Bulk Import</h2>
+      <label>Paste Q: / A: pairs, separated by a blank line or ---</label>
+      <textarea id="bulkText" rows="6" placeholder="Q: What is the capital of France?
+A: Paris
+---
+Q: What is 2+2?
+A: 4"></textarea>
+      <div class="row-btns">
+        <button class="btn btn-rust" id="btnBulkImport">Import Pasted Text</button>
+        <button class="btn" id="btnFileImportTrigger">Import .txt File</button>
+        <input type="file" id="fileImport" accept=".txt" style="display:none;">
+      </div>
+      <p class="hint" style="margin-top:10px;">Working from a PDF of questions and an answer key, or photos of questions? Paste the extracted text here, or upload a .txt file in this format.</p>
+    </div>
+
+    <div class="panel" style="flex:1;">
+      <h2>Your Deck (<span id="deckCount">0</span>)</h2>
+      <div class="card-list" id="cardList"></div>
+    </div>
+
+    <button class="btn" id="btnBackHome" style="margin-top:4px;">← Back</button>
+  </div>
+
+  <!-- STUDY -->
+  <div class="screen" id="screen-study">
+    <div class="study-top">
+      <div class="progress-txt" id="studyProgress">1 / 1</div>
+      <div class="timer" id="timerDisplay">2:00</div>
+    </div>
+
+    <div class="index-card">
+      <div class="card-face-label">Question</div>
+      <div class="card-text" id="questionText"></div>
+
+      <div class="answer-block" id="answerBlock">
+        <hr class="answer-divider">
+        <div class="card-face-label">Answer</div>
+        <div class="card-text" id="answerText" style="font-size:17px;"></div>
+      </div>
+    </div>
+
+    <div class="reveal-wrap" id="revealWrap">
+      <button class="btn btn-primary" id="btnReveal">Reveal Answer <span style="opacity:.6;font-size:11px;">(space)</span></button>
+    </div>
+
+    <div class="grade-row" id="gradeRow" style="display:none;">
+      <button class="stamp-btn stamp-again" data-grade="again">Again<span class="interval" id="ivAgain">10m</span></button>
+      <button class="stamp-btn stamp-hard" data-grade="hard">Hard<span class="interval" id="ivHard">1d</span></button>
+      <button class="stamp-btn stamp-good" data-grade="good">Good<span class="interval" id="ivGood">3d</span></button>
+      <button class="stamp-btn stamp-easy" data-grade="easy">Easy<span class="interval" id="ivEasy">6d</span></button>
+    </div>
+
+    <div class="study-bottom">
+      <button class="exit-link" id="btnExitStudy">End session</button>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="screen" id="screen-summary">
+    <div class="summary-box">
+      <h2>Session Complete</h2>
+      <div class="stat-row" style="max-width:340px;margin:0 auto 10px;">
+        <div class="stat"><div class="num" id="sumReviewed">0</div><div class="lbl">Reviewed</div></div>
+        <div class="stat"><div class="num" id="sumStreak">0</div><div class="lbl">Streak</div></div>
+      </div>
+      <div class="breakdown" id="sumBreakdown"></div>
+      <button class="btn btn-primary" id="btnBackHome2">Back to Home</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
