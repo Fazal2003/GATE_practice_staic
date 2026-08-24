@@ -9,7 +9,8 @@
   let stats = { streak: 0, lastStudyDate: null, totalReviews: 0 };
 
   const el = id => document.getElementById(id);
-
+  
+  // TODO data import in PDF-->JSON 
   function loadData(){
     try{
       const raw = localStorage.getItem(DECK_KEY);
@@ -20,10 +21,12 @@
       if(raw) stats = JSON.parse(raw);
     }catch(e){ stats = { streak:0, lastStudyDate:null, totalReviews:0 }; }
   }
+  // 
   function saveDeck(){
     try{ localStorage.setItem(DECK_KEY, JSON.stringify(deck)); }
     catch(e){ console.error('deck save failed', e); }
   }
+  // progress managing
   function saveStats(){
     try{ localStorage.setItem(STATS_KEY, JSON.stringify(stats)); }
     catch(e){ console.error('stats save failed', e); }
