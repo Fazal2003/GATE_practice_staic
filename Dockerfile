@@ -1,4 +1,4 @@
-FROM python 3.3
+FROM nginx:alpine
 
 WORKDIR /GATE_prep
 
