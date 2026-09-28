@@ -6,7 +6,7 @@ jobs:
     exploration:
       runs-on: ubuntu-latest
       steps:
-        -run: echo "started testing"
+        - run: echo "started testing"
         - name: listing files in repository
           run: ls ${{github.workspace }}
-        -run: echo" job status---- ${{ job.status}}"
+        - run: echo" job status---- ${{ job.status}}"
