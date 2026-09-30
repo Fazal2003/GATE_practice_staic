@@ -72,6 +72,7 @@ body{
 }
 .stat .num{font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;color:var(--rust);}
 .stat .lbl{font-family:'Special Elite',cursive;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-soft);margin-top:4px;}
+.plan-note{font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.7;color:var(--ink-soft);margin:-16px 0 24px;letter-spacing:0.3px;}
 
 .btn{
   font-family:'Special Elite',cursive;
@@ -222,6 +223,7 @@ textarea:focus,input:focus{outline:none;border-left-color:var(--rust);}
 .bd-item{text-align:center;}
 .bd-item .n{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;}
 .bd-item .l{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;margin-top:2px;}
+.sum-note{font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.7;color:var(--ink-soft);margin:0 0 20px;}
 
 ::-webkit-scrollbar{width:8px;}
 ::-webkit-scrollbar-thumb{background:var(--line);}
@@ -229,4 +231,6 @@ textarea:focus,input:focus{outline:none;border-left-color:var(--rust);}
 @media (max-width:480px){
   .card-text{font-size:16px;}
   .grade-row{grid-template-columns:repeat(2,1fr);}
+  .stat-row{flex-wrap:wrap;}
+  .stat{flex:1 1 calc(50% - 7px);}
 }

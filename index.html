@@ -21,12 +21,14 @@
       <div class="stat"><div class="num" id="statDue">0</div><div class="lbl">Due Now</div></div>
       <div class="stat"><div class="num" id="statTotal">0</div><div class="lbl">Total Cards</div></div>
       <div class="stat"><div class="num" id="statStreak">0</div><div class="lbl">Day Streak</div></div>
+      <div class="stat"><div class="num" id="statReviews">0</div><div class="lbl">Reviews</div></div>
     </div>
+    <div class="plan-note" id="planNote"></div>
     <div class="home-actions">
       <button class="btn btn-primary" id="btnStart">Start Review</button>
       <button class="btn" id="btnManage">Manage Cards</button>
     </div>
-    <p class="hint">Each question gets a 2-minute timer. Rate yourself honestly after every card — <em>Again, Hard, Good, Easy</em> — and the schedule adjusts like Anki's spaced repetition. <a id="linkHowImport">No cards yet? Add or import some →</a></p>
+    <p class="hint">Each question gets a 2-minute timer. Rate yourself honestly after every card — <em>Again, Hard, Good, Easy</em> — and the schedule adjusts like Anki's spaced repetition: new cards step through 1m → 10m before graduating, missed cards come back later in the same session, and the four buttons show the interval they will produce. <a id="linkHowImport">No cards yet? Add or import some →</a></p>
   </div>
 
   <!-- MANAGE -->
@@ -53,12 +55,18 @@ A: 4"></textarea>
         <button class="btn" id="btnFileImportTrigger">Import .txt File</button>
         <input type="file" id="fileImport" accept=".txt" style="display:none;">
       </div>
-      <p class="hint" style="margin-top:10px;">Working from a PDF of questions and an answer key, or photos of questions? Paste the extracted text here, or upload a .txt file in this format.</p>
+      <p class="hint" style="margin-top:10px;">Working from a PDF of questions and an answer key, or photos of questions? Paste the extracted text here, or upload a .txt file in this format. Duplicates are skipped automatically, so re-importing a file never resets a card you have already reviewed.</p>
     </div>
 
     <div class="panel" style="flex:1;">
       <h2>Your Deck (<span id="deckCount">0</span>)</h2>
       <div class="card-list" id="cardList"></div>
+      <div class="row-btns" style="margin-top:14px;">
+        <button class="btn" id="btnLoadSample">Load Sample Deck</button>
+        <button class="btn" id="btnExportDeck">Export Backup</button>
+        <button class="btn btn-rust" id="btnClearDeck">Clear Deck</button>
+      </div>
+      <p class="hint" style="margin-top:10px;">Progress lives in this browser only. Export a backup before clearing site data or switching devices.</p>
     </div>
 
     <button class="btn" id="btnBackHome" style="margin-top:4px;">← Back</button>
@@ -87,10 +95,10 @@ A: 4"></textarea>
     </div>
 
     <div class="grade-row" id="gradeRow" style="display:none;">
-      <button class="stamp-btn stamp-again" data-grade="again">Again<span class="interval" id="ivAgain">10m</span></button>
-      <button class="stamp-btn stamp-hard" data-grade="hard">Hard<span class="interval" id="ivHard">1d</span></button>
-      <button class="stamp-btn stamp-good" data-grade="good">Good<span class="interval" id="ivGood">3d</span></button>
-      <button class="stamp-btn stamp-easy" data-grade="easy">Easy<span class="interval" id="ivEasy">6d</span></button>
+      <button class="stamp-btn stamp-again" data-grade="again">Again<span class="interval" id="ivAgain">1m</span></button>
+      <button class="stamp-btn stamp-hard" data-grade="hard">Hard<span class="interval" id="ivHard">1m</span></button>
+      <button class="stamp-btn stamp-good" data-grade="good">Good<span class="interval" id="ivGood">10m</span></button>
+      <button class="stamp-btn stamp-easy" data-grade="easy">Easy<span class="interval" id="ivEasy">4d</span></button>
     </div>
 
     <div class="study-bottom">
@@ -107,11 +115,13 @@ A: 4"></textarea>
         <div class="stat"><div class="num" id="sumStreak">0</div><div class="lbl">Streak</div></div>
       </div>
       <div class="breakdown" id="sumBreakdown"></div>
+      <p class="sum-note" id="sumNote"></p>
       <button class="btn btn-primary" id="btnBackHome2">Back to Home</button>
     </div>
   </div>
 </div>
 
+<script src="js/scheduler.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

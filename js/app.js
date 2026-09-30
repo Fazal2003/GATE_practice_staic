@@ -1,100 +1,178 @@
 (function(){
   "use strict";
 
-  const DAY = 24*60*60*1000;
+  const SS = window.StudyScheduler;
   const DECK_KEY = 'studycards.deck';
   const STATS_KEY = 'studycards.stats';
+  const SCHEMA_VERSION = 2;
 
-  let deck = { cards: [] };
-  let stats = { streak: 0, lastStudyDate: null, totalReviews: 0 };
+  let deck = { version: SCHEMA_VERSION, cards: [] };
+  let stats = SS.defaults();
 
   const el = id => document.getElementById(id);
-  
-  // TODO data import in PDF-->JSON 
+
+  function uid(){ return 'c_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
+
+  // ---- storage -------------------------------------------------------------
+  // Cards now carry a learning phase (state/step/lapses) on top of the old
+  // ef/reps/interval/due fields, so SS.normalizeCard() fills in / migrates them.
   function loadData(){
+    let rawDeck = null;
     try{
-      const raw = localStorage.getItem(DECK_KEY);
-      if(raw) deck = JSON.parse(raw);
-    }catch(e){ deck = { cards: [] }; }
+      rawDeck = localStorage.getItem(DECK_KEY);
+      if(rawDeck){
+        const parsed = JSON.parse(rawDeck);
+        if(parsed && Array.isArray(parsed.cards)){
+          deck = { version: parsed.version || 1, cards: parsed.cards.map(SS.normalizeCard) };
+        }
+      }
+    }catch(e){
+      // Never let a corrupt blob silently cost the deck: stash a copy first.
+      console.error('deck load failed; keeping a backup copy', e);
+      try{ if(rawDeck) localStorage.setItem(DECK_KEY + '.corrupt.' + Date.now(), rawDeck); }catch(e2){}
+      deck = { version: SCHEMA_VERSION, cards: [] };
+    }
+
     try{
-      const raw = localStorage.getItem(STATS_KEY);
-      if(raw) stats = JSON.parse(raw);
-    }catch(e){ stats = { streak:0, lastStudyDate:null, totalReviews:0 }; }
+      const parsed = JSON.parse(localStorage.getItem(STATS_KEY) || 'null');
+      stats = Object.assign(SS.defaults(), (parsed && typeof parsed === 'object') ? parsed : {});
+    }catch(e){
+      stats = SS.defaults();
+    }
+    if(!stats.newByDay) stats.newByDay = { date: null, count: 0 };
   }
-  // 
+
   function saveDeck(){
-    try{ localStorage.setItem(DECK_KEY, JSON.stringify(deck)); }
+    try{ localStorage.setItem(DECK_KEY, JSON.stringify({ version: SCHEMA_VERSION, cards: deck.cards })); }
     catch(e){ console.error('deck save failed', e); }
   }
-  // progress managing
+
   function saveStats(){
     try{ localStorage.setItem(STATS_KEY, JSON.stringify(stats)); }
     catch(e){ console.error('stats save failed', e); }
   }
 
-  function uid(){ return 'c_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
+  // ---- deck management ----------------------------------------------------
 
-  function dueCards(){
+  function addCards(list){
+    deck.cards = deck.cards.concat(list);
+    saveDeck();
+    renderManage();
+    renderHome();
+  }
+
+  // Import a parsed deck, skipping questions already in the deck so that
+  // importing the same file twice can never reset existing progress.
+  function importParsed(parsed){
+    const known = Object.create(null);
+    deck.cards.forEach(c => { known[SS.dedupeKey(c.q)] = true; });
+    const fresh = [];
+    let dupes = parsed.duplicates;
+    parsed.cards.forEach(c => {
+      const key = SS.dedupeKey(c.q);
+      if(known[key]){ dupes += 1; return; }
+      known[key] = true;
+      fresh.push(SS.newCard(c.q, c.a, uid()));
+    });
+    if(fresh.length) addCards(fresh);
+    return { added: fresh.length, dupes: dupes, malformed: parsed.malformed };
+  }
+
+  function importSummary(res){
+    const bits = ['Added ' + res.added + ' card' + (res.added === 1 ? '' : 's') + '.'];
+    if(res.dupes) bits.push('Skipped ' + res.dupes + ' duplicate' + (res.dupes === 1 ? '' : 's') + '.');
+    if(res.malformed) bits.push(res.malformed + ' block' + (res.malformed === 1 ? '' : 's') + ' had no Q:/A: pair.');
+    return bits.join(' ');
+  }
+
+  function loadSampleDeck(){
+    fetch('data/gate-me-2026-deck.txt')
+      .then(r => { if(!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+      .then(text => { alert(importSummary(importParsed(SS.parseDeck(text)))); })
+      .catch(err => {
+        console.error('sample deck fetch failed', err);
+        alert('Could not fetch the sample deck. Serve the folder over http:// (or use Import .txt File) and try again.');
+      });
+  }
+
+  function exportDeck(){
+    if(!deck.cards.length){ alert('Nothing to export yet.'); return; }
+    const payload = JSON.stringify({
+      version: SCHEMA_VERSION,
+      exportedAt: new Date().toISOString(),
+      stats: stats,
+      cards: deck.cards
+    }, null, 2);
+    const blob = new Blob([payload], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'study-cards-' + new Date().toISOString().slice(0,10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function clearDeck(){
+    if(!deck.cards.length){ alert('The deck is already empty.'); return; }
+    if(!confirm('Delete all ' + deck.cards.length + ' cards, along with their review history? This cannot be undone.')) return;
+    deck.cards = [];
+    saveDeck();
+    renderManage();
+    renderHome();
+  }
+
+  // ---- session planning ---------------------------------------------------
+
+  function studyOptions(){
     const now = Date.now();
-    return deck.cards.filter(c => !c.due || c.due <= now);
+    return { newPerDay: SS.CFG.NEW_PER_DAY, newIntroducedToday: SS.newIntroducedToday(stats, now) };
+  }
+
+  function sessionPlan(){ return SS.buildSessionQueue(deck.cards, Date.now(), studyOptions()); }
+
+  function planNote(plan){
+    if(!deck.cards.length) return 'No cards yet — paste a Q:/A: import or load the sample GATE deck.';
+    const bits = [];
+    if(plan.learning) bits.push(plan.learning + ' learning');
+    if(plan.review) bits.push(plan.review + ' review');
+    if(plan.newQueued) bits.push(plan.newQueued + ' new');
+    if(!bits.length) return 'Nothing due right now — cards return as their intervals elapse.';
+    let note = bits.join(' · ') + ' ready now';
+    if(plan.newDeferred) note += ' · ' + plan.newDeferred + ' new held back (' + SS.CFG.NEW_PER_DAY + '/day limit)';
+    return note;
   }
 
   function fmtDue(ts){
     if(!ts) return 'new';
     const diff = ts - Date.now();
     if(diff <= 0) return 'due now';
-    const mins = diff/60000;
-    if(mins < 60) return 'in ' + Math.round(mins) + 'm';
-    const hrs = mins/60;
-    if(hrs < 24) return 'in ' + Math.round(hrs) + 'h';
-    return 'in ' + Math.round(hrs/24) + 'd';
+    if(diff < 60*60*1000) return 'in ' + Math.max(1, Math.round(diff/60000)) + 'm';
+    if(diff < SS.DAY) return 'in ' + Math.max(1, Math.floor(diff/(60*60*1000))) + 'h';
+    const days = Math.floor(diff/SS.DAY);
+    if(days < 30) return 'in ' + Math.max(1, days) + 'd';
+    if(days < 365) return 'in ' + Math.round(days/30) + 'mo';
+    return 'in ' + (days/365).toFixed(1) + 'y';
   }
 
-  // ---- SM-2 style scheduler ----
-  function schedule(card, grade){
-    if(card.ef === undefined) card.ef = 2.5;
-    if(card.reps === undefined) card.reps = 0;
-    if(card.interval === undefined) card.interval = 0;
-
-    if(grade === 'again'){
-      card.reps = 0;
-      card.ef = Math.max(1.3, card.ef - 0.2);
-      card.interval = 10/1440; // 10 minutes, expressed in days
-    } else {
-      card.reps += 1;
-      if(grade === 'hard'){
-        card.ef = Math.max(1.3, card.ef - 0.15);
-        card.interval = card.reps === 1 ? 1 : Math.max(1, Math.round(card.interval * 1.2));
-      } else if(grade === 'good'){
-        if(card.reps === 1) card.interval = 1;
-        else if(card.reps === 2) card.interval = 3;
-        else card.interval = Math.round(card.interval * card.ef);
-      } else if(grade === 'easy'){
-        card.ef = card.ef + 0.15;
-        if(card.reps === 1) card.interval = 4;
-        else card.interval = Math.round(card.interval * card.ef * 1.3);
-      }
-    }
-    card.due = Date.now() + card.interval * DAY;
-    return card;
+  function stateLabel(card){
+    if(card.state === 'new') return 'brand new card';
+    if(card.state === 'relearning') return 'relearning after a lapse';
+    if(card.state === 'learning') return 'learning step ' + (card.step + 1) + ' of ' + SS.stepsFor(card.state).length;
+    return 'ease ' + card.ef.toFixed(2) + (card.lapses ? ' · ' + card.lapses + ' lapse' + (card.lapses === 1 ? '' : 's') : '');
   }
 
-  function previewInterval(card, grade){
-    const clone = JSON.parse(JSON.stringify(card || {}));
-    schedule(clone, grade);
-    const days = clone.interval;
-    if(days < 1/24) return Math.round(days*1440) + 'm';
-    if(days < 1) return Math.round(days*24) + 'h';
-    if(days < 30) return Math.round(days) + 'd';
-    return Math.round(days/30) + 'mo';
-  }
+  // ---- rendering ----------------------------------------------------------
 
-  // ---- rendering ----
   function renderHome(){
-    el('statDue').textContent = dueCards().length;
+    const plan = sessionPlan();
+    el('statDue').textContent = plan.queue.length;
     el('statTotal').textContent = deck.cards.length;
     el('statStreak').textContent = stats.streak || 0;
-    el('btnStart').disabled = dueCards().length === 0;
+    el('statReviews').textContent = stats.totalReviews || 0;
+    el('planNote').textContent = planNote(plan);
+    el('btnStart').disabled = plan.queue.length === 0;
   }
 
   function renderManage(){
@@ -108,12 +186,14 @@
     deck.cards.slice().reverse().forEach(c => {
       const row = document.createElement('div');
       row.className = 'card-row';
-      row.innerHTML = `<div class="q">${escapeHtml(c.q)}</div><div class="due-tag">${fmtDue(c.due)}</div><button class="del" data-id="${c.id}">✕</button>`;
+      row.innerHTML = '<div class="q">' + escapeHtml(c.q) + '</div>'
+        + '<div class="due-tag" title="' + escapeHtml(stateLabel(c)) + '">' + fmtDue(c.due) + '</div>'
+        + '<button class="del" data-id="' + escapeHtml(c.id) + '">✕</button>';
       list.appendChild(row);
     });
-    list.querySelectorAll('.del').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        deck.cards = deck.cards.filter(c=>c.id !== btn.dataset.id);
+    list.querySelectorAll('.del').forEach(btn => {
+      btn.addEventListener('click', () => {
+        deck.cards = deck.cards.filter(c => c.id !== btn.dataset.id);
         saveDeck();
         renderManage();
         renderHome();
@@ -127,23 +207,34 @@
     return d.innerHTML;
   }
 
-  // ---- screens ----
+  // ---- screens ------------------------------------------------------------
+
   function showScreen(id){
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     el(id).classList.add('active');
   }
 
-  // ---- study session state ----
-  let session = { queue: [], index: 0, revealed:false, results:{again:0,hard:0,good:0,easy:0}, timerId:null, timeLeft:120 };
+  // ---- study session ------------------------------------------------------
+
+  const TIMER_SECONDS = 120;
+  let session = {
+    queue: [], index: 0, revealed: false, locked: false, graded: 0,
+    results: { again: 0, hard: 0, good: 0, easy: 0 },
+    repsByCard: Object.create(null), newDeferred: 0, timerId: null, timeLeft: TIMER_SECONDS
+  };
 
   function startStudy(){
-    session.queue = dueCards().slice();
-    for(let i=session.queue.length-1;i>0;i--){
-      const j = Math.floor(Math.random()*(i+1));
-      [session.queue[i],session.queue[j]] = [session.queue[j],session.queue[i]];
-    }
+    const plan = sessionPlan();
+    // buildSessionQueue already puts learning steps first, then due reviews,
+    // then the day's new-card allowance - no reshuffle here.
+    session.queue = plan.queue.slice();
     session.index = 0;
-    session.results = {again:0,hard:0,good:0,easy:0};
+    session.graded = 0;
+    session.revealed = false;
+    session.locked = false;
+    session.repsByCard = Object.create(null);
+    session.results = { again: 0, hard: 0, good: 0, easy: 0 };
+    session.newDeferred = plan.newDeferred;
     if(session.queue.length === 0){ showScreen('screen-home'); return; }
     showScreen('screen-study');
     loadCard();
@@ -151,31 +242,32 @@
 
   function loadCard(){
     clearInterval(session.timerId);
-    session.timeLeft = 120;
+    session.timeLeft = TIMER_SECONDS;
     session.revealed = false;
+    session.locked = false;
     const card = session.queue[session.index];
-    el('studyProgress').textContent = (session.index+1) + ' / ' + session.queue.length;
+    el('studyProgress').textContent = (session.index + 1) + ' / ' + session.queue.length;
     el('questionText').textContent = card.q;
     el('answerText').textContent = card.a;
     el('answerBlock').classList.remove('show');
     el('revealWrap').style.display = 'block';
     el('gradeRow').style.display = 'none';
-    updateTimerDisplay();
     el('timerDisplay').classList.remove('warn');
+    updateTimerDisplay();
 
-    session.timerId = setInterval(()=>{
-      session.timeLeft--;
+    session.timerId = setInterval(() => {
+      session.timeLeft -= 1;
       updateTimerDisplay();
       if(session.timeLeft <= 15) el('timerDisplay').classList.add('warn');
       if(session.timeLeft <= 0){
         clearInterval(session.timerId);
         revealAnswer();
       }
-    },1000);
+    }, 1000);
 
-    ['again','hard','good','easy'].forEach(g=>{
-      const map = {again:'ivAgain',hard:'ivHard',good:'ivGood',easy:'ivEasy'};
-      el(map[g]).textContent = previewInterval(card, g);
+    el('gradeRow').querySelectorAll('.stamp-btn').forEach(btn => {
+      btn.querySelector('.interval').textContent = SS.previewInterval(card, btn.dataset.grade);
+      btn.title = SS.previewDueLabel(card, btn.dataset.grade);
     });
   }
 
@@ -189,140 +281,162 @@
     if(session.revealed) return;
     session.revealed = true;
     clearInterval(session.timerId);
+    el('timerDisplay').classList.remove('warn');
     el('answerBlock').classList.add('show');
     el('revealWrap').style.display = 'none';
     el('gradeRow').style.display = 'grid';
   }
 
   function gradeCard(grade){
-    const card = session.queue[session.index];
-    const realCard = deck.cards.find(c=>c.id === card.id);
-    schedule(realCard, grade);
-    session.results[grade]++;
+    if(!session.revealed || session.locked) return;
+    session.locked = true;
+
+    const queued = session.queue[session.index];
+    const card = deck.cards.find(c => c.id === queued.id) || queued;
+    const now = Date.now();
+    const wasNew = card.state === 'new';
+
+    SS.schedule(card, grade, now);
+    if(wasNew){
+      SS.recordNewIntroduced(stats, now);
+      saveStats();
+    }
+
+    session.results[grade] = (session.results[grade] || 0) + 1;
+    session.graded += 1;
     saveDeck();
 
-    session.index++;
-    if(session.index >= session.queue.length){
-      finishSession();
-    } else {
-      loadCard();
+    // Still on a learning step? Bring it back later in this same session so the
+    // 1m/10m relearning actually happens instead of being pushed to tomorrow.
+    if(SS.isLearningPhase(card)){
+      const reps = session.repsByCard[card.id] || 0;
+      if(reps < SS.CFG.MAX_INTRADAY_REPS){
+        session.repsByCard[card.id] = reps + 1;
+        session.queue.push(card);
+      }
     }
+
+    session.index += 1;
+    session.locked = false;
+    if(session.index >= session.queue.length) finishSession();
+    else loadCard();
   }
 
   function finishSession(){
     clearInterval(session.timerId);
-    const today = new Date().toDateString();
-    if(stats.lastStudyDate !== today){
-      const yest = new Date(Date.now()-DAY).toDateString();
-      stats.streak = (stats.lastStudyDate === yest) ? (stats.streak||0)+1 : 1;
-      stats.lastStudyDate = today;
-    }
-    stats.totalReviews = (stats.totalReviews||0) + session.queue.length;
-    saveStats();
+    const now = Date.now();
+    const distinct = new Set(session.queue.map(c => c.id)).size;
 
-    el('sumReviewed').textContent = session.queue.length;
-    el('sumStreak').textContent = stats.streak;
+    if(session.graded > 0){
+      SS.touchStreak(stats, now);
+      stats.totalReviews = (stats.totalReviews || 0) + session.graded;
+      saveStats();
+    }
+
+    el('sumReviewed').textContent = session.graded;
+    el('sumStreak').textContent = stats.streak || 0;
+
     const bd = el('sumBreakdown');
     bd.innerHTML = '';
-    const colors = {again:'var(--rust)',hard:'#8a5a1f',good:'var(--forest)',easy:'#2c6f8e'};
-    Object.entries(session.results).forEach(([k,v])=>{
+    const colors = { again:'var(--rust)', hard:'#8a5a1f', good:'var(--forest)', easy:'#2c6f8e' };
+    Object.entries(session.results).forEach(([k,v]) => {
       const d = document.createElement('div');
       d.className = 'bd-item';
-      d.innerHTML = `<div class="n" style="color:${colors[k]}">${v}</div><div class="l">${k}</div>`;
+      d.innerHTML = '<div class="n" style="color:' + colors[k] + '">' + v + '</div><div class="l">' + k + '</div>';
       bd.appendChild(d);
     });
+
+    const plan = sessionPlan();
+    const bits = [];
+    if(session.graded !== distinct) bits.push(session.graded + ' answers across ' + distinct + ' cards');
+    if(plan.learning) bits.push(plan.learning + ' still mid-step');
+    if(plan.queue.length) bits.push(plan.queue.length + ' due again already');
+    if(session.newDeferred) bits.push(session.newDeferred + ' new held back for tomorrow (' + SS.CFG.NEW_PER_DAY + '/day)');
+    el('sumNote').textContent = bits.join(' · ');
+
     showScreen('screen-summary');
     renderHome();
   }
 
   function endSessionEarly(){
+    // Count the work already done instead of throwing the streak away.
+    if(session.graded > 0){ finishSession(); return; }
     clearInterval(session.timerId);
     showScreen('screen-home');
     renderHome();
   }
 
-  // ---- bulk import parsing ----
-  function parseBulk(text){
-    const cards = [];
-    const blocks = text.split(/\n\s*---\s*\n|\n{2,}/);
-    blocks.forEach(block=>{
-      const qm = block.match(/Q:\s*([\s\S]*?)(?:\nA:|$)/i);
-      const am = block.match(/A:\s*([\s\S]*)/i);
-      if(qm && am){
-        const q = qm[1].trim();
-        const a = am[1].trim();
-        if(q && a) cards.push({id:uid(), q, a, ef:2.5, reps:0, interval:0, due:0});
-      }
-    });
-    return cards;
-  }
+  // ---- wire up ------------------------------------------------------------
 
-  // ---- wire up ----
-  document.addEventListener('DOMContentLoaded', ()=>{
+  document.addEventListener('DOMContentLoaded', () => {
     loadData();
     renderHome();
     renderManage();
-    setInterval(()=>{ el('clockNow').textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); },1000);
+    setInterval(() => { el('clockNow').textContent = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }); }, 1000);
 
     el('btnStart').addEventListener('click', startStudy);
-    el('btnManage').addEventListener('click', ()=>{ renderManage(); showScreen('screen-manage'); });
-    el('linkHowImport').addEventListener('click', ()=>{ renderManage(); showScreen('screen-manage'); });
-    el('btnBackHome').addEventListener('click', ()=>{ renderHome(); showScreen('screen-home'); });
-    el('btnBackHome2').addEventListener('click', ()=>{ renderHome(); showScreen('screen-home'); });
+    el('btnManage').addEventListener('click', () => { renderManage(); showScreen('screen-manage'); });
+    el('linkHowImport').addEventListener('click', () => { renderManage(); showScreen('screen-manage'); });
+    el('btnBackHome').addEventListener('click', () => { renderHome(); showScreen('screen-home'); });
+    el('btnBackHome2').addEventListener('click', () => { renderHome(); showScreen('screen-home'); });
 
-    el('btnAddCard').addEventListener('click', ()=>{
+    el('btnAddCard').addEventListener('click', () => {
       const q = el('newQ').value.trim();
       const a = el('newA').value.trim();
       if(!q || !a) return;
-      deck.cards.push({id:uid(), q, a, ef:2.5, reps:0, interval:0, due:0});
-      saveDeck();
-      el('newQ').value=''; el('newA').value='';
-      renderManage(); renderHome();
+      addCards([SS.newCard(q, a, uid())]);
+      el('newQ').value = '';
+      el('newA').value = '';
     });
 
-    el('btnBulkImport').addEventListener('click', ()=>{
+    el('btnBulkImport').addEventListener('click', () => {
       const text = el('bulkText').value;
-      const cards = parseBulk(text);
-      if(cards.length === 0){ alert('No Q:/A: pairs found. Check the format.'); return; }
-      deck.cards = deck.cards.concat(cards);
-      saveDeck();
+      if(!text.trim()){ alert('Paste some Q:/A: text first.'); return; }
+      const res = importParsed(SS.parseDeck(text));
+      if(res.added === 0){
+        alert('Nothing new to import. ' + importSummary(res));
+        return;
+      }
       el('bulkText').value = '';
-      renderManage(); renderHome();
+      alert(importSummary(res));
     });
 
-    el('btnFileImportTrigger').addEventListener('click', ()=> el('fileImport').click());
-    el('fileImport').addEventListener('change', (e)=>{
+    el('btnFileImportTrigger').addEventListener('click', () => el('fileImport').click());
+    el('fileImport').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if(!file) return;
       const reader = new FileReader();
-      reader.onload = (evt)=>{
-        const cards = parseBulk(evt.target.result);
-        if(cards.length === 0){ alert('No Q:/A: pairs found in that file.'); return; }
-        deck.cards = deck.cards.concat(cards);
-        saveDeck();
-        renderManage(); renderHome();
-        alert('Imported ' + cards.length + ' cards.');
-      };
+      reader.onload = (evt) => { alert(importSummary(importParsed(SS.parseDeck(evt.target.result)))); };
       reader.readAsText(file);
       e.target.value = '';
     });
 
+    el('btnLoadSample').addEventListener('click', loadSampleDeck);
+    el('btnExportDeck').addEventListener('click', exportDeck);
+    el('btnClearDeck').addEventListener('click', clearDeck);
+
     el('btnReveal').addEventListener('click', revealAnswer);
-    el('gradeRow').addEventListener('click', (e)=>{
+    el('gradeRow').addEventListener('click', (e) => {
       const btn = e.target.closest('.stamp-btn');
       if(btn) gradeCard(btn.dataset.grade);
     });
     el('btnExitStudy').addEventListener('click', endSessionEarly);
 
-    document.addEventListener('keydown', (e)=>{
+    document.addEventListener('keydown', (e) => {
+      if(e.repeat) return;
       if(!el('screen-study').classList.contains('active')) return;
-      if(e.code === 'Space'){ e.preventDefault(); if(!session.revealed) revealAnswer(); }
-      if(session.revealed){
-        if(e.key === '1') gradeCard('again');
-        if(e.key === '2') gradeCard('hard');
-        if(e.key === '3') gradeCard('good');
-        if(e.key === '4') gradeCard('easy');
+      if(e.code === 'Space'){
+        e.preventDefault();
+        if(session.revealed) gradeCard('good');
+        else revealAnswer();
+        return;
       }
+      if(!session.revealed) return;
+      if(e.key === '1') gradeCard('again');
+      if(e.key === '2') gradeCard('hard');
+      if(e.key === '3') gradeCard('good');
+      if(e.key === '4') gradeCard('easy');
     });
   });
 })();
+
